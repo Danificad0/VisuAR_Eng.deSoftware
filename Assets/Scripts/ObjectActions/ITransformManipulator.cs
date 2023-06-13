@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface ITransformManipulator
 {
-    void Manipulate(Transform transform, Vector2[] positions);
+    void ManipulateObject(Transform objectToManipulate, Vector2 deltaTouchPosition);
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ObjectManipulator : MonoBehaviour
+public class ObjectManipulator : MonoBehaviour, ITransformManipulator
 {
     [SerializeField] private Transform objectToManipulate;
     [SerializeField] private ObjectRotator rotator;
@@ -8,6 +8,23 @@ public class ObjectManipulator : MonoBehaviour
 
     private Vector2 initialTouchPosition;
     private bool isRotating = false;
+
+    public void ManipulateObject(Transform objectToManipulate, Vector2 deltaTouchPosition)
+    {
+        if (!isRotating && Mathf.Abs(deltaTouchPosition.x) > Mathf.Abs(deltaTouchPosition.y))
+        {
+            isRotating = true;
+        }
+
+        if (isRotating)
+        {
+            rotator.RotateObject(objectToManipulate, deltaTouchPosition.x);
+        }
+        else
+        {
+            scaler.ScaleObject(objectToManipulate, deltaTouchPosition);
+        }
+    }
 
     private void Update()
     {
@@ -26,20 +43,7 @@ public class ObjectManipulator : MonoBehaviour
                     Vector2 currentTouchPosition = touch.position;
                     Vector2 deltaTouchPosition = currentTouchPosition - initialTouchPosition;
 
-                    if (!isRotating && Mathf.Abs(deltaTouchPosition.x) > Mathf.Abs(deltaTouchPosition.y))
-                    {
-                        isRotating = true;
-                    }
-
-                    if (isRotating)
-                    {
-                        rotator.RotateObject(objectToManipulate, deltaTouchPosition.x);
-                    }
-                    else
-                    {
-                        scaler.ScaleObject(objectToManipulate, deltaTouchPosition);
-                    }
-
+                    ManipulateObject(objectToManipulate, deltaTouchPosition);
                     break;
 
                 case TouchPhase.Ended:
